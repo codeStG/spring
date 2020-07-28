@@ -6,4 +6,6 @@ import com.tekcamp.spring.model.User;
 
 public interface UserService {
 	List<User> getUsers();
+
+	void createUser();
 }

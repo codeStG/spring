@@ -31,7 +31,7 @@ public class UserController {
 	
 	@PostMapping
 	public void createUser() {
-		
+		userService.createUser();
 	}
 	
 	@PutMapping
