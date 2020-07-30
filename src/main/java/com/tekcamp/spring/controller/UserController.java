@@ -1,16 +1,12 @@
 package com.tekcamp.spring.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.tekcamp.spring.model.User;
 import com.tekcamp.spring.services.UserService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("users")
@@ -28,20 +24,34 @@ public class UserController {
 		
 		return returnValue;
 	}
+
+	@GetMapping(path = "/{id}")
+	public Optional<User> getUser(@PathVariable Long id) {
+		Optional<User> returnValue = userService.getUserById(id);
+		return returnValue;
+	}
+
+
+	@GetMapping(path = "/email/{email}")
+	public User getUser(@PathVariable String email) {
+		User returnValue = userService.getUserByEmail(email);
+
+		return returnValue;
+	}
 	
 	@PostMapping
-	public void createUser() {
-		userService.createUser();
+	public void createUser(@RequestBody User user) {
+		userService.createUser(user);
 	}
 	
-	@PutMapping
-	public void updateUser() {
-		
+	@PutMapping(path = "/{id}")
+	public void updateUser(@PathVariable(value = "id") Long id, @Validated @RequestBody User userDetails) {
+		userService.updateUser(id, userDetails);
 	}
 	
-	@DeleteMapping
-	public void deleteUser() {
-		
+	@DeleteMapping(path = "/{id}")
+	public void deleteUser(@PathVariable Long id) {
+		userService.deleteUser(id);
 	}
 	
 	

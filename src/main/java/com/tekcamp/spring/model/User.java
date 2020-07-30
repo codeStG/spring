@@ -1,18 +1,17 @@
 package com.tekcamp.spring.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Entity
+import javax.persistence.*;
+
+@Entity(name = "User")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(length = 25, nullable = false)
 	private String firstName;
 	@Column(length = 25, nullable = false)
@@ -55,7 +54,6 @@ public class User {
 	public String getPassword() {
 		return password;
 	}
-
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
