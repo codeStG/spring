@@ -28,9 +28,9 @@ public class UserController {
 
 		List<UserResponse> userResponseList = new ArrayList<UserResponse>();
 
-		for(int i = 0; i < userDtoList.size(); i++) {
+		for (UserDto userDto : userDtoList) {
 			UserResponse userResponse = new UserResponse();
-			BeanUtils.copyProperties(userDtoList.get(i), userResponse);
+			BeanUtils.copyProperties(userDto, userResponse);
 			userResponseList.add(userResponse);
 		}
 

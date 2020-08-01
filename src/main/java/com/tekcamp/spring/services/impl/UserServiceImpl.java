@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -47,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto getUserById(Long id) {
-		Optional<UserEntity> userEntity = userRepository.findById(id);
+		UserEntity userEntity = userRepository.findById(id).get();
 		UserDto returnValue = new UserDto();
 		BeanUtils.copyProperties(userEntity, returnValue);
 		return returnValue;
