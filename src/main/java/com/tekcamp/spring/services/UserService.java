@@ -1,20 +1,20 @@
 package com.tekcamp.spring.services;
 
-import com.tekcamp.spring.model.User;
+import com.tekcamp.spring.dto.UserDto;
+import com.tekcamp.spring.model.UserEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
-	List<User> getUsers();
+	List<UserDto> getUsers(int page, int limit);
 
-	Optional<User> getUserById(Long id);
+	UserDto getUserById(Long id);
 
-	User getUserByEmail(String email);
+	UserEntity getUserByEmail(String email);
+
+	UserDto createUser(UserDto userDto);
+
+	UserEntity updateUser(Long id, UserEntity userDetails);
 
 	void deleteUser(Long id);
-
-	void createUser(User user);
-
-	User updateUser(Long id, User userDetails);
 }

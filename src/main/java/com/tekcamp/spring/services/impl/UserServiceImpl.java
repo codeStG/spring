@@ -1,9 +1,13 @@
 package com.tekcamp.spring.services.impl;
 
 import com.tekcamp.spring.dao.UserRepository;
+import com.tekcamp.spring.dto.UserDto;
 import com.tekcamp.spring.exception.ResourceNotFoundException;
-import com.tekcamp.spring.model.User;
+import com.tekcamp.spring.model.UserEntity;
 import com.tekcamp.spring.services.UserService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,53 +23,94 @@ public class UserServiceImpl implements UserService {
 		this.userRepository = userRepository;
 	}
 
+	@Override
+	public List<UserDto> getUsers(int page, int limit) {
+		List<UserEntity> userEntityList = new ArrayList<UserEntity>();
 
+		if(page>0) page--;
+		PageRequest pageableRequest = PageRequest.of(page, limit);
+
+		Page<UserEntity> userPageList = userRepository.findAll(pageableRequest);
+
+		userEntityList = userPageList.getContent();
+
+		List<UserDto> userDtoList = new ArrayList<UserDto>();
+
+		for(int i = 0; i<userEntityList.size(); i++) {
+			UserDto userDto = new UserDto();
+			BeanUtils.copyProperties(userEntityList.get(i), userDto);
+			userDtoList.add(userDto);
+		}
+		
+		return userDtoList;
+	}
 
 	@Override
-	public List<User> getUsers() {
-		List<User> returnValue = new ArrayList<User>();
-		
-		returnValue = (List<User>) userRepository.findAll();
-		
+	public UserDto getUserById(Long id) {
+		Optional<UserEntity> userEntity = userRepository.findById(id);
+		UserDto returnValue = new UserDto();
+		BeanUtils.copyProperties(userEntity, returnValue);
 		return returnValue;
 	}
 
 	@Override
-	public Optional<User> getUserById(Long id) {
-		Optional<User> returnValue = userRepository.findById(id);
-		return returnValue;
-	}
-
-	@Override
-	public User getUserByEmail(String email) {
-		User returnValue = userRepository.findByEmail(email);
+	public UserEntity getUserByEmail(String email) {
+		UserEntity returnValue = userRepository.findByEmail(email);
 		return returnValue;
 	}
 
 	@Override
 	public void deleteUser(Long id) {
-		User user = userRepository.findById(id)
+		UserEntity userEntity = userRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("user", "id", id));
 
-		userRepository.delete(user);
+		userRepository.delete(userEntity);
 	}
 
 	@Override
-	public void createUser(User user) {
-		userRepository.save(user);		
+	public UserDto createUser(UserDto userDto) {
+		UserEntity newUser = new UserEntity();
+		BeanUtils.copyProperties(userDto, newUser);
+
+		newUser.setPassword("test"); //This is where you encrypt
+
+		UserEntity storedUserDetails = userRepository.save(newUser);
+
+		UserDto returnValue = new UserDto();
+		BeanUtils.copyProperties(storedUserDetails, returnValue);
+		return returnValue;
 	}
 
 	@Override
-	public User updateUser(Long id, User userDetails) {
-		User user = userRepository.findById(id)
+	public UserEntity updateUser(Long id, UserEntity userDetails) {
+		UserEntity userEntity = userRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("user", "id", id));
 
-		user.setFirstName(userDetails.getFirstName());
-		user.setLastName(userDetails.getLastName());
-		user.setEmail(userDetails.getEmail());
-		user.setPassword(userDetails.getPassword());
+		userEntity.setFirstName(userDetails.getFirstName());
+		userEntity.setLastName(userDetails.getLastName());
+		userEntity.setEmail(userDetails.getEmail());
+		userEntity.setPassword(userDetails.getPassword());
 
-		return userRepository.save(user);
+		return userRepository.save(userEntity);
 	}
+
+//	@Override
+//	public UserDto updateUser(Long id, UserEntity userDetails) {
+//		UserEntity updatedUser = userRepository.findById(id)
+//				.orElseThrow(() -> new ResourceNotFoundException("user", "id", id));
+//
+//		UserDto userDto = new UserDto();
+//		BeanUtils.copyProperties(updatedUser, userDto);
+//
+//		userDto.setFirstName(userDetails.getFirstName());
+//		userDto.setLastName(userDetails.getLastName());
+//		userDto.setEmail(userDetails.getEmail());
+//		userDto.setPassword(userDetails.getPassword());
+//
+//		UserEntity storedUserDetails = userRepository.save(updatedUser);
+//
+//
+//		return userRepository.save(userEntity);
+//	}
 
 }

@@ -1,12 +1,10 @@
 package com.tekcamp.spring.dao;
 
-import com.tekcamp.spring.model.User;
-import org.springframework.data.repository.CrudRepository;
+import com.tekcamp.spring.model.UserEntity;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
-    User findByEmail(String email);
-
-
+public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long> {
+    UserEntity findByEmail(String email);
 }

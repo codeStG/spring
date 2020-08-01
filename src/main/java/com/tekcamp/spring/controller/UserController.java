@@ -1,12 +1,16 @@
 package com.tekcamp.spring.controller;
 
-import com.tekcamp.spring.model.User;
+import com.tekcamp.spring.dto.UserDto;
+import com.tekcamp.spring.model.UserEntity;
+import com.tekcamp.spring.model.request.UserRequest;
+import com.tekcamp.spring.model.response.UserResponse;
 import com.tekcamp.spring.services.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("users")
@@ -19,33 +23,52 @@ public class UserController {
 	}
 
 	@GetMapping
-	public List<User> getUsers() {
-		List<User> returnValue = userService.getUsers();
-		
-		return returnValue;
+	public List<UserResponse> getUsers(@RequestParam(value="page", defaultValue="1") int page, @RequestParam(value="limit", defaultValue="5") int limit){
+		List<UserDto> userDtoList = userService.getUsers(page, limit);
+
+		List<UserResponse> userResponseList = new ArrayList<UserResponse>();
+
+		for(int i = 0; i < userDtoList.size(); i++) {
+			UserResponse userResponse = new UserResponse();
+			BeanUtils.copyProperties(userDtoList.get(i), userResponse);
+			userResponseList.add(userResponse);
+		}
+
+		return userResponseList;
 	}
 
 	@GetMapping(path = "/{id}")
-	public Optional<User> getUser(@PathVariable Long id) {
-		Optional<User> returnValue = userService.getUserById(id);
+	public UserResponse getUser(@PathVariable Long id) {
+		UserDto singleUserDto = userService.getUserById(id);
+		UserResponse returnValue = new UserResponse();
+		BeanUtils.copyProperties(singleUserDto, returnValue);
 		return returnValue;
 	}
 
 
 	@GetMapping(path = "/email/{email}")
-	public User getUser(@PathVariable String email) {
-		User returnValue = userService.getUserByEmail(email);
+	public UserEntity getUser(@PathVariable String email) {
+		UserEntity returnValue = userService.getUserByEmail(email);
 
 		return returnValue;
 	}
 	
 	@PostMapping
-	public void createUser(@RequestBody User user) {
-		userService.createUser(user);
+	public UserResponse createUser(@RequestBody UserRequest userRequest) {
+
+		UserDto userDto = new UserDto();
+		BeanUtils.copyProperties(userRequest, userDto);
+
+		UserDto updatedUser = userService.createUser(userDto);
+
+		UserResponse returnValue = new UserResponse();
+		BeanUtils.copyProperties(updatedUser, returnValue);
+
+		return returnValue;
 	}
 	
 	@PutMapping(path = "/{id}")
-	public void updateUser(@PathVariable(value = "id") Long id, @Validated @RequestBody User userDetails) {
+	public void updateUser(@PathVariable(value = "id") Long id, @Validated @RequestBody UserEntity userDetails) {
 		userService.updateUser(id, userDetails);
 	}
 	

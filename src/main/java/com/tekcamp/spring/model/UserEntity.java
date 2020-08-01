@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity(name = "User")
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class UserEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,36 +23,23 @@ public class User {
 	@Column(length = 20, nullable = false)
 	private String password;
 	
-	public User() {
+	public UserEntity() {
 	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	
+
 	public Long getId() {
 		return id;
 	}
-
 
 	public String getFirstName() {
 		return firstName;
 	}
 
-
 	public String getLastName() {
 		return lastName;
 	}
 
-
 	public String getEmail() {
 		return email;
-	}
-
-
-	public String getPassword() {
-		return password;
 	}
 
 	public void setFirstName(String firstName) {
@@ -66,11 +53,12 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	
 
+	public String setPassword(String password) {
+		return password;
+	}
+
+	public String getPassword() {
+		return password;
+	}
 }
