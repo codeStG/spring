@@ -34,6 +34,10 @@ public class UserResponse {
         return email;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
