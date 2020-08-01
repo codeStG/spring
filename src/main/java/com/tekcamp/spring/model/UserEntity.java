@@ -55,6 +55,10 @@ public class UserEntity {
 		return password;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}

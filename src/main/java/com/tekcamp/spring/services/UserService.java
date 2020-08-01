@@ -1,7 +1,6 @@
 package com.tekcamp.spring.services;
 
 import com.tekcamp.spring.dto.UserDto;
-import com.tekcamp.spring.model.UserEntity;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public interface UserService {
 
 	UserDto createUser(UserDto userDto);
 
-	UserEntity updateUser(Long id, UserEntity userDetails);
+	UserDto updateUser(Long id, UserDto userDetails);
 
-	void deleteUser(Long id);
+	String deleteUser(Long id);
 }

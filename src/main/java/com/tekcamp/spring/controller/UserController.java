@@ -1,7 +1,6 @@
 package com.tekcamp.spring.controller;
 
 import com.tekcamp.spring.dto.UserDto;
-import com.tekcamp.spring.model.UserEntity;
 import com.tekcamp.spring.model.request.UserRequest;
 import com.tekcamp.spring.model.response.UserResponse;
 import com.tekcamp.spring.services.UserService;
@@ -70,15 +69,21 @@ public class UserController {
 	}
 	
 	@PutMapping(path = "/{id}")
-	public void updateUser(@PathVariable(value = "id") Long id, @Validated @RequestBody UserEntity userDetails) {
-		userService.updateUser(id, userDetails);
+	public UserResponse UserDto(@PathVariable(value = "id") Long id, @Validated @RequestBody UserRequest userDetails) {
+		UserDto userDto = new UserDto();
+		BeanUtils.copyProperties(userDetails, userDto);
+
+		UserDto updatedUser = userService.updateUser(id, userDto);
+
+		UserResponse returnValue = new UserResponse();
+		BeanUtils.copyProperties(updatedUser, returnValue);
+
+		return returnValue;
 	}
 	
 	@DeleteMapping(path = "/{id}")
-	public void deleteUser(@PathVariable Long id) {
-		userService.deleteUser(id);
+	public String deleteUser(@PathVariable Long id) {
+		String response = userService.deleteUser(id);
+		return response;
 	}
-	
-	
-	
 }

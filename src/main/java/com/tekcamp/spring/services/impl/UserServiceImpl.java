@@ -2,7 +2,6 @@ package com.tekcamp.spring.services.impl;
 
 import com.tekcamp.spring.dao.UserRepository;
 import com.tekcamp.spring.dto.UserDto;
-import com.tekcamp.spring.exception.ResourceNotFoundException;
 import com.tekcamp.spring.model.UserEntity;
 import com.tekcamp.spring.services.UserService;
 import org.springframework.beans.BeanUtils;
@@ -46,7 +45,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto getUserById(Long id) {
-		UserEntity userEntity = userRepository.findById(id).get();
+		UserEntity userEntity;
+
+		if(userRepository.findById(id).isPresent()) {
+			userEntity = userRepository.findById(id).get();
+		} else {
+			throw new NullPointerException("User Not Found");
+		}
+
 		UserDto returnValue = new UserDto();
 		BeanUtils.copyProperties(userEntity, returnValue);
 		return returnValue;
@@ -62,11 +68,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void deleteUser(Long id) {
-		UserEntity userEntity = userRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("user", "id", id));
+	public String deleteUser(Long id) {
+		UserDto foundDtoUser = new UserDto();
 
-		userRepository.delete(userEntity);
+		UserEntity foundUser;
+		if(userRepository.findById(id).isPresent()) {
+			foundUser = userRepository.findById(id).get();
+
+			BeanUtils.copyProperties(foundUser, foundDtoUser);
+			userRepository.deleteById(foundUser.getId());
+
+			return "User " + foundDtoUser.getFirstName() + " " + foundDtoUser.getLastName() + " deleted.";
+		} else {
+			throw new NullPointerException("User Not Found");
+		}
 	}
 
 	@Override
@@ -83,35 +98,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserEntity updateUser(Long id, UserEntity userDetails) {
-		UserEntity userEntity = userRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("user", "id", id));
+	public UserDto updateUser(Long id, UserDto userDetails) {
+		UserEntity updateUser = new UserEntity();
+		BeanUtils.copyProperties(userDetails, updateUser);
 
-		userEntity.setFirstName(userDetails.getFirstName());
-		userEntity.setLastName(userDetails.getLastName());
-		userEntity.setEmail(userDetails.getEmail());
-		userEntity.setPassword(userDetails.getPassword());
+		UserEntity priorUserData;
 
-		return userRepository.save(userEntity);
+		if(userRepository.findById(id).isPresent()) {
+			priorUserData = userRepository.findById(id).get();
+
+			updateUser.setId(priorUserData.getId());
+
+			UserEntity updatedUserDetails = userRepository.save(updateUser);
+
+			UserDto returnValue = new UserDto();
+
+			BeanUtils.copyProperties(updatedUserDetails, returnValue);
+
+			return returnValue;
+		} else {
+			throw new NullPointerException("User Not Found");
+		}
 	}
-
-//	@Override
-//	public UserDto updateUser(Long id, UserEntity userDetails) {
-//		UserEntity updatedUser = userRepository.findById(id)
-//				.orElseThrow(() -> new ResourceNotFoundException("user", "id", id));
-//
-//		UserDto userDto = new UserDto();
-//		BeanUtils.copyProperties(updatedUser, userDto);
-//
-//		userDto.setFirstName(userDetails.getFirstName());
-//		userDto.setLastName(userDetails.getLastName());
-//		userDto.setEmail(userDetails.getEmail());
-//		userDto.setPassword(userDetails.getPassword());
-//
-//		UserEntity storedUserDetails = userRepository.save(updatedUser);
-//
-//
-//		return userRepository.save(userEntity);
-//	}
-
 }
