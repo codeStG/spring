@@ -7,10 +7,11 @@ public class UserResponse {
     private String email;
 
     public UserResponse() {
-
+        super();
     }
 
-    public UserResponse(Long id, String firstName, String lastName, String email, String password) {
+    public UserResponse(Long id, String firstName, String lastName, String email) {
+        super();
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

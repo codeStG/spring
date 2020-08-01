@@ -35,6 +35,10 @@ public class UserDto {
         return email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }

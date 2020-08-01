@@ -10,7 +10,7 @@ public interface UserService {
 
 	UserDto getUserById(Long id);
 
-	UserEntity getUserByEmail(String email);
+	UserDto getUserByEmail(String email);
 
 	UserDto createUser(UserDto userDto);
 

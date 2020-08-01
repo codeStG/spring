@@ -2,17 +2,17 @@ package com.tekcamp.spring.model.request;
 
 public class UserRequest {
 
-    private Long id;
     private String firstName;
     private String  lastName;
     private String email;
     private String password;
 
     public UserRequest() {
-
+        super();
     }
 
     public UserRequest(String firstName, String lastName, String email, String password) {
+        super();
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

@@ -47,8 +47,10 @@ public class UserController {
 
 
 	@GetMapping(path = "/email/{email}")
-	public UserEntity getUser(@PathVariable String email) {
-		UserEntity returnValue = userService.getUserByEmail(email);
+	public UserResponse getUser(@PathVariable String email) {
+		UserDto singleUserDto = userService.getUserByEmail(email);
+		UserResponse returnValue = new UserResponse();
+		BeanUtils.copyProperties(singleUserDto, returnValue);
 
 		return returnValue;
 	}
@@ -59,10 +61,10 @@ public class UserController {
 		UserDto userDto = new UserDto();
 		BeanUtils.copyProperties(userRequest, userDto);
 
-		UserDto updatedUser = userService.createUser(userDto);
+		UserDto newUser = userService.createUser(userDto);
 
 		UserResponse returnValue = new UserResponse();
-		BeanUtils.copyProperties(updatedUser, returnValue);
+		BeanUtils.copyProperties(newUser, returnValue);
 
 		return returnValue;
 	}

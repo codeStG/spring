@@ -54,8 +54,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserEntity getUserByEmail(String email) {
-		UserEntity returnValue = userRepository.findByEmail(email);
+	public UserDto getUserByEmail(String email) {
+		UserEntity userEntity = userRepository.findByEmail(email);
+		UserDto returnValue = new UserDto();
+		BeanUtils.copyProperties(userEntity, returnValue);
+
 		return returnValue;
 	}
 
@@ -72,12 +75,11 @@ public class UserServiceImpl implements UserService {
 		UserEntity newUser = new UserEntity();
 		BeanUtils.copyProperties(userDto, newUser);
 
-		newUser.setPassword("test"); //This is where you encrypt
-
 		UserEntity storedUserDetails = userRepository.save(newUser);
 
 		UserDto returnValue = new UserDto();
 		BeanUtils.copyProperties(storedUserDetails, returnValue);
+
 		return returnValue;
 	}
 
