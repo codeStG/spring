@@ -2,6 +2,7 @@ package com.tekcamp.spring.services.impl;
 
 import com.tekcamp.spring.dao.UserRepository;
 import com.tekcamp.spring.dto.UserDto;
+import com.tekcamp.spring.exception.ResourceNotFoundException;
 import com.tekcamp.spring.model.UserEntity;
 import com.tekcamp.spring.services.UserService;
 import org.springframework.beans.BeanUtils;
@@ -34,9 +35,9 @@ public class UserServiceImpl implements UserService {
 
 		List<UserDto> userDtoList = new ArrayList<UserDto>();
 
-		for(int i = 0; i<userEntityList.size(); i++) {
+		for (UserEntity userEntity : userEntityList) {
 			UserDto userDto = new UserDto();
-			BeanUtils.copyProperties(userEntityList.get(i), userDto);
+			BeanUtils.copyProperties(userEntity, userDto);
 			userDtoList.add(userDto);
 		}
 		
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService {
 		if(userRepository.findById(id).isPresent()) {
 			userEntity = userRepository.findById(id).get();
 		} else {
-			throw new NullPointerException("User Not Found");
+			throw new ResourceNotFoundException("ID", id.toString(), null);
 		}
 
 		UserDto returnValue = new UserDto();
